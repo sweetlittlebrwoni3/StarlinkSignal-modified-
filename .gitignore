@@ -1,0 +1,10 @@
+*.asv
+data/
+.vscode
+*.ini
+researchNotes/
+*.fig
+*.png
+*.jpeg
+*.jpg
+*.bak
