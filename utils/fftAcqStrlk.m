@@ -78,6 +78,7 @@ if (s.Fsr ~= Fs)
 end
 buffer = 100;
 if (length(y) >= Nk - buffer)
+    detection = 1;
     y = [y;zeros(Nk-length(y),1)];
 elseif (length(y) - Nk < buffer)
     str = sprintf("Error! The data should be long enough to contain at least 1 frame.");
@@ -177,6 +178,73 @@ data.sigma2_c = sigma2_c;
 data.pkVec = pkVec;
 
 data.Sk = Sk;
+
+%__________________________________________________________________
+Fsr = s.Fsr;
+Fcr = s.Fcr;
+y = s.y;
+Nk = floor(Fsr.*1/750);
+y = y(1:Nk);
+
+if (Fsr ~= 240e6)
+    tVec = [0:length(y)-1]'/Fsr;
+    [yVec,~] = resample(y,tVec,240e6,"spline");
+else
+    yVec = y;
+end
+if (getClosestFch(Fcr) - Fcr ~= 0)
+    tVec = [0:length(yVec)-1]'/(240e6); 
+    Fshift =  getClosestFch(Fcr) - Fcr;
+    yVec = yVec.*exp(-j*2*pi*Fshift*tVec);
+end
+% Assuming out.grif = |S(f,k)|
+% where S_k = |S(f,k)|^2 in the paper
+% Also that k dimension is 320000 long, with frame in center
+% and no frame before it.
+[vals, idxs] = max(data.grid);
+[~, t0_idx] = max(vals);
+fd_idx = idxs(t0_idx);
+Nc = data.Nc;
+sigma2_c = data.sigma2_c;
+fDop = data.fdfine;
+tVec = [0:length(yVec)-1]'/(240e6); 
+yVec = yVec.*exp(-j*2*pi*fDop*tVec);
+c = [genPss(); genSss()];
+
+yVec = [yVec;zeros(320000-length(yVec),1)];
+
+[R_compare,lag_compare] = xcorr(yVec(1:floor(1/750*Fs)),c);
+R_compare = abs(R_compare(floor(1/750*Fs):end));
+lag_compare = lag_compare(floor(1/750*Fs):end);
+noise_mat = R_compare(1:t0_idx-1056);
+noise_vec = noise_mat(:);
+H0_floor_2 = noise_vec'*noise_vec/length(noise_vec);
+% Peak 
+Sk_peak_2 = (R_compare(t0_idx)).^2;
+Sk_no_noise_2 = Sk_peak_2-H0_floor_2;
+% The peak |Sk| ~ Rice(nu, sigma_0) so will
+% have on average a value of (Nc*A*sigma2_c)
+A = sqrt(Sk_peak_2)./(Nc.*sigma2_c);
+Ps = A^2;
+SNR_post = Sk_no_noise_2./H0_floor_2;
+SNR_hat = SNR_post./(sigma2_c.*Nc.*Fsr/Fs);
+fprintf("SNR estimate : %.2f dB\n",pow2db(SNR_hat))
+%_____________________________________________________________________
+
+% ss.N = N*(s.Fsr/Fs);
+% ss.Ng = Ng*(s.Fsr/Fs);
+% ss.Nsym = 298*(s.Fsr/Fs);
+% ss.y = resample(s.y(3*(ss.N+ss.Ng)+1:300*(ss.N+ss.Ng)),Fs,s.Fsr);
+% [snr_dB,sigma_2,nitter] = ofdmSnrEstimator(ss);
+% 
+% snr_dB
+
+values(1) = fdfine;
+values(2) = tau;
+values(3) = 15;
+values(4) = detection;
+
+data.values = values;
 
 if (debugPltGrid_en)
     [X,Y] = meshgrid(tauvec,fdvec);
