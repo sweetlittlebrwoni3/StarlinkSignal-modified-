@@ -59,7 +59,7 @@ ss.Nsym = s.Nsym;
 
 input1 = reshape(input,s.N+s.Ng,[]);
 
-data = zeros(s.N,s.Nsfd);
+data = zeros(s.N - 4,s.Nsfd);
 for ii = 1:s.Nsfd
     if(~isfield(s,"type"))
         if(ii < 5)

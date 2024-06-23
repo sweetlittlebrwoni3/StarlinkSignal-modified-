@@ -80,8 +80,8 @@ if (~isfield(s,'data'))
     s.Midx = 2.^nextpow2(s.Midx).*ones(w,1);
 else
     [l,w] = size(s.data);
-    if(l ~= s.N || w>s.Nsym)
-        error('s.data must be an N x Nsym vector');
+    if(l ~= s.N-4 || w>s.Nsym)
+        error('s.data must be an (N-4) x Nsym vector');
     end
     s.Midx = 2.^nextpow2(max(s.data));
     x = s.data;
@@ -120,8 +120,10 @@ end
 % Organize the complex numbers in batches of N
 if (s.gutter)
     Ngut = 4; % Startlink has a 4 subcarrier gutter at center.
-    XVec = fftshift(XVec,1);
-    XVec((s.N-Ngut)/2+1:(s.N-Ngut)/2+Ngut,:) = 0;
+    % XVec = fftshift(XVec,1);
+    % XVec((s.N-Ngut)/2+1:(s.N-Ngut)/2+Ngut,:) = 0;
+    % XVec = fftshift(XVec,1);
+    XVec = [zeros(Ngut/2,size(XVec,2)) ; XVec ; zeros(Ngut/2,size(XVec,2))];
     XVec = fftshift(XVec,1);
 end
 % Transform to time domain.  Multiply by sqrt(N) to preserve energy

@@ -54,6 +54,7 @@ else
     Ngut = 4;
     end
 end
+Nd = s.N - Ngut;
 
 % Removing the cyclic prefix
 input = s.yVec(s.Ng+1:length(s.yVec));
@@ -63,6 +64,8 @@ input = s.yVec(s.Ng+1:length(s.yVec));
 
 % Demodulation using ofdmdemod:
 x1 = ofdmdemod(input,1024,0);
+x1 = x1(Ngut/2+1:s.N-Ngut/2);
+x1 = fftshift(x1);
 
 if ( upper(string(s.type)) == "PSK")
     x1Vec = pskdemod(x1,s.Midx);
@@ -75,6 +78,9 @@ end
 
 % Demodulation using fft:
 x2 = (1/sqrt(s.N))*fft(input);
+x2 = fftshift(x2);
+x2 = x2(Ngut/2+1:s.N-Ngut/2);
+x2 = fftshift(x2);
 
 if ( upper(string(s.type)) == "PSK")
     x2Vec = pskdemod(x2,s.Midx);
@@ -95,8 +101,8 @@ end
 
 
 % Data recovery
-output = zeros(1,s.N);
-for ii=1:s.N
+output = zeros(1,Nd);
+for ii=1:Nd
     if(real(xVec(ii)) >= 0)
         output(ii) = output(ii) + 1;
     else

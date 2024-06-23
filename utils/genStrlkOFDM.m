@@ -65,8 +65,8 @@ if (isfield(s,'data') && ~isfield(s,'type'))
 end
 if (isfield(s,'data'))
 [l,w] = size(s.data);
-if(l ~= s.N || w>300)
-    error('s.data must be an N x 300 vector at most');
+if(l ~= s.N-4 || w>300)
+    error('s.data must be an (N-4) x 300 vector at most');
 end
 end
 
