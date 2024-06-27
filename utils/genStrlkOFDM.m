@@ -23,7 +23,7 @@ function y = genStrlkOFDM(s)
 %             beta = vlos/c. Simulated by resampling at (1+beta)*Fs and
 %             shifting by FD. Set beta to zero for no Doppler shift.
 %
-%  * Nsym      (optional) Number of consequtive symbols to generate.
+% * Nsym      (optional) Number of consequtive symbols to generate.
 %              Default is 1
 %  
 % * data      1024 x K vector (optional). Each column corresponds to the
@@ -77,10 +77,7 @@ if((~isfield(s,'data')) && (mod(log2(s.Midx),2) ~= 0) && (s.Midx ~= 2))
 end
 
 % Get closest starlink channel center to receiver center
-F = s.Fs/s.N;
-chIdx = round((s.Fcr/1e9 - 10.7 - F/2/1e9)/0.25 + 0.5);
-Fcii = (10.7e9 + F/2 + 250e6*(chIdx - 0.5));
-s.Fc = Fcii;
+s.Fc = getClosestFch(s.Fcr);
 
 y = genOFDM(s);
 

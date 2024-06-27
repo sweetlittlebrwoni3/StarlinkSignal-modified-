@@ -131,7 +131,7 @@ if (isfield(s,'beta'))
                 frame(iidum) = s.channel(frame(iidum));
             end
         else
-            FD = -s.beta*getClosestFch(s.Fcr); % Doppler
+            FD     = -s.beta*getClosestFch(s.Fcr); % Doppler
             fShift = FD + getClosestFch(s.Fcr) - s.Fcr; % total frequency shift
 
             tVec = (0:length(frame)-1)'/s.Fs;

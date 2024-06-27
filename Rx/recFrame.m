@@ -56,6 +56,7 @@ ss.Fc = s.Fc;
 ss.Fcr = s.Fcr;
 ss.gutter = s.gutter;
 ss.Nsym = s.Nsym;
+ss.beta = s.beta;
 
 input1 = reshape(input,s.N+s.Ng,[]);
 

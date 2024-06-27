@@ -44,6 +44,18 @@ function data = recOFDM(s)
 %
 
 
+
+%----- Recovery From Doppler & Receiver bias to center----%
+if(s.beta ~= 0 || s.Fc ~= s.Fcr)
+  tVec = [0:length(yVec)-1]'/s.Fs;
+  FD = -s.beta*s.Fc;
+  % Both methods' effect added together:
+  Fshift = FD + s.Fc - s.Fcr;
+  yVec = yVec.*exp(-j*2*pi*Fshift*tVec);  
+end
+
+
+
 % Checking to see if there's gutter
 if(~isfield(s,'gutter'))
     Ngut = 0;
