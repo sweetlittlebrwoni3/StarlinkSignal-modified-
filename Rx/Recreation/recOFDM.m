@@ -10,50 +10,48 @@ function data = recOFDM(s)
 %  * N         Number of subcarriers, size of FFT/IFFT w/out CP (cyclic prefix)
 %
 %  * Ng        Number of guard subcarriers CP (cyclic prefix)
-% 
+%
 %  * Midx      Subcarrier constellation size (2 = BPSK, 4 = 4QAM, 16 =
 %              16QAM, etc.). OVERWRITTEN IF DATA IS PROVIDED see *data below
 %
 %  * type      Modulation type ('PSK' or 'QAM' only)
 %
 %  * Fsr       Receiver sample rate.  If it is less than Fs, the signal is filtered
-%              before resampling to prevent aliasing.  Set Fsr to Fs to skip 
+%              before resampling to prevent aliasing.  Set Fsr to Fs to skip
 %              resampling and get the full Fs signal.
 %
 %  * Fcr       Receiver center frequency.
-% 
+%
 %  * Fc        OFDM signal center frequency, in Hz
 %
-%  * beta      Doppler factor. Doppler shift is FD = -beta*Fc where 
+%  * beta      Doppler factor. Doppler shift is FD = -beta*Fc where
 %              beta = vlos/c. Simulated by resampling at (1+beta)*Fs and
-%              shifting by FD. Set beta to zero for no Doppler shift. For 
-%              approaching SVs (beta < 0), the measured inter-frame interval 
-%              is shorter (compressed) compared to the ideal inter-frame 
+%              shifting by FD. Set beta to zero for no Doppler shift. For
+%              approaching SVs (beta < 0), the measured inter-frame interval
+%              is shorter (compressed) compared to the ideal inter-frame
 %              interval of 1/750. Assuming a polynomial model of the form
-%              tF(t) = p3*t^2 + p2*t + p1, then dtF/dt|_0 = p1 = beta(0).  
+%              tF(t) = p3*t^2 + p2*t + p1, then dtF/dt|_0 = p1 = beta(0).
 %              Doppler frequency shift for a tone at Fc is given by FD = -beta*Fc.
 %
-%  * gutter    boolean 1 or 0 (optional). Enables a gutter of 4F at center 
+%  * gutter    boolean 1 or 0 (optional). Enables a gutter of 4F at center
 %              as observed in Starlink signals
 %
 %  * yVec      Input OFDM symbol
-%              
-%   -- Output -- 
+%
+%   -- Output --
 %
 %   data       Demodulated OFDM symbol back to it's normal data type
 %
 
 
-
 %----- Recovery From Doppler & Receiver bias to center----%
 if(s.beta ~= 0 || s.Fc ~= s.Fcr)
-  tVec = [0:length(yVec)-1]'/s.Fs;
-  FD = -s.beta*s.Fc;
-  % Both methods' effect added together:
-  Fshift = FD + s.Fc - s.Fcr;
-  yVec = yVec.*exp(-j*2*pi*Fshift*tVec);  
+    tVec = [0:length(yVec)-1]'/s.Fs;
+    FD = -s.beta*s.Fc;
+    % Both methods' effect added together:
+    Fshift = FD + s.Fc - s.Fcr;
+    yVec = yVec.*exp(-j*2*pi*Fshift*tVec);
 end
-
 
 
 % Checking to see if there's gutter
@@ -63,7 +61,7 @@ else
     if(s.gutter == 0)
         Ngut = 0;
     else
-    Ngut = 4;
+        Ngut = 4;
     end
 end
 Nd = s.N - Ngut;
@@ -112,7 +110,7 @@ if(isfield(s,'method'))
 end
 
 
-% Data recovery
+% Data recovery for 4QAM
 output = zeros(1,Nd);
 for ii=1:Nd
     if(real(xVec(ii)) >= 0)

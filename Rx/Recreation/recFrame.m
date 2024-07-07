@@ -45,6 +45,12 @@ pss = genPss();
 sss = genSss();
 input = s.y(length(pss)+length(sss)+1:length(s.y)-Nfg);
 
+if(s.gutter == 1)
+    Nd = s.N - 4;
+else
+    Nd = s.N;
+end
+
 
 ss.type = s.type;
 ss.Midx = s.Midx;
@@ -60,7 +66,7 @@ ss.beta = s.beta;
 
 input1 = reshape(input,s.N+s.Ng,[]);
 
-data = zeros(s.N - 4,s.Nsfd);
+data = zeros(Nd,s.Nsfd);
 for ii = 1:s.Nsfd
     if(~isfield(s,"type"))
         if(ii < 5)

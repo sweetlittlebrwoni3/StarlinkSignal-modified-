@@ -57,6 +57,12 @@ s.Ng = 32;
 % Enable 4 subcarrier gutter at center
 s.gutter = 1;
 
+if(s.gutter == 1)
+    Nd = s.N - 4;
+else
+    Nd = s.N;
+end
+
 if (~isfield(s,'Nsym'))
     s.Nsym = 1;
 end
@@ -65,8 +71,8 @@ if (isfield(s,'data') && ~isfield(s,'type'))
 end
 if (isfield(s,'data'))
 [l,w] = size(s.data);
-if(l ~= s.N-4 || w>300)
-    error('s.data must be an (N-4) x 300 vector at most');
+if(l ~= Nd || w>300)
+    error('s.data must be an %d x 300 vector at most',Nd);
 end
 end
 

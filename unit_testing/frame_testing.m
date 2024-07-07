@@ -13,25 +13,31 @@ Ng = 32; % c.p length
 Midx = 4; % subcarrier constellation size
 Nsym = 300; % # of symbols to simulate
 Nprovided = Nsym; % # of provided data sequences to generate
+Nd = 1020; % # of data carrying s.c
 
 % Test input params
 s.SNRdB = nan(); % Signal to noise ratio, in dB
-s.Fsr = 240e6; % Receiver sample rate, in Hz. 
+s.Fsr = 240e6; % Receiver sample rate, in Hz.
 s.Fcr = 12075117187.5; % Receiver center frequency, in Hz
 s.beta = 0; % Doppler parameter
 s.type = 'QAM'; % subcarrier constellation type
-s.data = randi([0 Midx-1],N,Nprovided); % Input data
+s.data = randi([0 Midx-1],Nd,Nprovided); % Input data
 
 % Generate frame, zero pad, and process
 y = genStrlkFrame(s);
 y = [y; zeros((N+Ng)*ceil(length(y)/(N+Ng)) - length(y),1)]; % zero pad
 y = reshape(y,N+Ng,[]); % break up in symbols
 y = y(Ng+1:end,3:302); % remove CP
-Y = 1/sqrt(N).*fft(y);
+for iii=1:300
+    Y(:,iii) = (1/sqrt(N))*fft(y(:,iii)');
+end
 
 % set gutter values to nan() for easier comparison
-Y(1:2,:) = nan();
-Y(end-1:end,:) = nan();
+% Y(1:2,:) = nan();
+% Y(end-1:end,:) = nan();
+Y = fftshift(Y);
+Y = Y(3:1022,:);
+Y = fftshift(Y);
 
 % Expected decoded input data
 if ( upper(string(s.type)) == "PSK")
@@ -44,11 +50,13 @@ if ( upper(string(s.type)) == "PSK")
 elseif( upper(string(s.type)) == "QAM")
     for ii=1:Nprovided
      seq = qammod(s.data(:,ii),2^nextpow2(max(s.data(:,ii))),'UnitAveragePower',true);
-     seq(1:2) = nan();
-     seq(end-1:end) = nan();
-     data_in(:,ii) = getDiffEnc(seq);
+     % seq(1:2) = nan();
+     % seq(end-1:end) = nan();
+     % data_in(:,ii) = getDiffEnc(seq);
+     data_in(:,ii) = seq;
     end
 end
+
 if (Nsym - Nprovided > 0)
     Nreps = floor(Nsym/Nprovided);
     Nremain = mod(Nsym,Nprovided);
@@ -57,7 +65,8 @@ if (Nsym - Nprovided > 0)
 end
 
 % decoded output data
-data_out = getDiffEnc(Y);
+% data_out = getDiffEnc(Y);
+data_out = Y;
 
 % Compare
 comp = data_out==data_in;
@@ -81,6 +90,7 @@ Ng = 32; % c.p length
 Midx = 4; % subcarrier constellation size
 Nsym = 300; % # of data symbols in starlink frame
 Nprovided = 1; % # of provided data sequences to generate
+Nd = 1020; % # of data carrying s.c
 SNRdb = 5;
 avgSCdecodethresh = 0.8;
 snrthresh_dB = 2;
@@ -91,7 +101,7 @@ s.Fsr = 240e6; % Receiver sample rate, in Hz.
 s.Fcr = 12075117187.5; % Receiver center frequency, in Hz
 s.beta = 0; % Doppler parameter
 s.type = 'QAM'; % subcarrier constellation type
-s.data = randi([0 Midx-1],N,Nprovided); % Input data
+s.data = randi([0 Midx-1],Nd,Nprovided); % Input data
 
 % Generate frame, zero pad, and process
 y = genStrlkFrame(s);
@@ -168,6 +178,7 @@ Fs = 240e6; % Starlink signal BW
 Midx = 4; % subcarrier constellation size
 Nsym = 300; % # of symbols to simulate
 Nprovided = Nsym; % # of provided data sequences to generate
+Nd = 1020; % # of data carrying s.c
 Fsr = 120e6;
 
 % Test input params
@@ -176,7 +187,7 @@ s.Fsr = Fsr; % Receiver sample rate, in Hz.
 s.Fcr = 12075117187.5; % Receiver center frequency, in Hz
 s.beta = 0; % Doppler parameter
 s.type = 'QAM'; % subcarrier constellation type
-s.data = randi([0 Midx-1],N,Nprovided); % Input data
+s.data = randi([0 Midx-1],Nd,Nprovided); % Input data
 
 % Generate frame, resample, and process
 y = genStrlkFrame(s);
@@ -237,6 +248,7 @@ Fs = 240e6; % Starlink signal BW
 Midx = 4; % subcarrier constellation size
 Nsym = 300; % # of symbols to simulate
 Nprovided = Nsym; % # of provided data sequences to generate
+Nd = 1020; % # of data carrying s.c
 Fd_target = 200e3;
 Fcr = getClosestFch(12075117187);
 beta = -Fd_target./getClosestFch(Fcr);
@@ -265,7 +277,7 @@ s.Fsr = Fs; % Receiver sample rate, in Hz.
 s.Fcr = Fcr; % Receiver center frequency, in Hz
 s.beta = beta; % Doppler parameter
 s.type = 'QAM'; % subcarrier constellation type
-s.data = randi([0 Midx-1],N,Nprovided); % Input data
+s.data = randi([0 Midx-1],Nd,Nprovided); % Input data
 
 
 % Generate frame, resample, and process
@@ -361,6 +373,7 @@ Fsr = 120e6;
 Midx = 4; % subcarrier constellation size
 Nsym = 300; % # of symbols to simulate
 Nprovided = Nsym; % # of provided data sequences to generate
+Nd = 1020; % # of data carrying s.c
 Fd_target = 200e3;
 Fcr = getClosestFch(12075117187);
 beta = -Fd_target./getClosestFch(Fcr);
@@ -389,7 +402,7 @@ s.Fsr = Fsr; % Receiver sample rate, in Hz.
 s.Fcr = Fcr; % Receiver center frequency, in Hz
 s.beta = beta; % Doppler parameter
 s.type = 'QAM'; % subcarrier constellation type
-s.data = randi([0 Midx-1],N,Nprovided); % Input data
+s.data = randi([0 Midx-1],Nd,Nprovided); % Input data
 
 
 % Generate frame, resample, and process
