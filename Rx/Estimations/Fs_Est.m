@@ -5,6 +5,10 @@ function Fs = Fs_Est(s)
 % -- Input --
 % * data      Input signal (raw array and not processed)
 %
+% * N         The Estimated number of subcarriers
+%
+% * Fsr       Samplig frequency in the receiver
+%
 %   -- Output -- 
 % * Fs         Estimated Fs parameter
 %

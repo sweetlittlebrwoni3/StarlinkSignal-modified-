@@ -93,9 +93,11 @@ for i = 1:length(S)
     end
 end
 
-% The Validation Test
+
 results = abs(vec(Sr + idx1));
 Mx = max(results , [] , 2);
+
+% The Validation Test
 valid = false;
 while(~valid)
     [maxVal , maxIdx] = max(Mx);
