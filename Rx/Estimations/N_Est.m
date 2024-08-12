@@ -14,9 +14,9 @@ function N = N_Est(s)
 % The following data should be provided as input
 input = s.data;
 
-% Turn on if you need to see the data autocorrelateion plot
+% The switch to see more details
 if(~isfield(s , 'info'))
-    s.info = true;
+    s.info = false;
 end
 info = s.info;
 

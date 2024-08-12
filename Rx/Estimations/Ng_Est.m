@@ -21,17 +21,10 @@ Fs = s.Fs;
 
 
 % The option to choose amongst the methods
-if(~isfield(s , 'Ng_estimation_method'))
-    s.Ng_estimation_method = "best";
+if(~isfield(s , 'Ng_method'))
+    s.Ng_method = "optimized";
 end
-method = s.Ng_estimation_method;
-
-
-% Turn on if you need to see the data autocorrelateion plot
-if(~isfield(s , 'info'))
-    s.info = true;
-end
-info = s.info;
+method = s.Ng_method;
 
 
 % Worst-case 95% root-mean-square delay spread
@@ -68,38 +61,18 @@ for i = 1:length(q)
         Sg(i , j) = 2*q(i) + b(j);
     end
 end
-zeta = reshape(Sg , [] , 1);
+zeta = reshape(Sg,1,[]);
+% Sg dataset is constructed
+% but since the only possible value for b is 1024
+% the other values are unused.
 
 
 
 shiftedInput = circshift(input , N);
 
 
-% Using the basic method exactly like the one in the paper
-% (No optimization is done in this method)
-if(method == "basic")
-    sigma = zeros(length(zeta) , 1);
-    for index = 1:length(zeta)
-        alpha = (-Np:Np)/zeta(index);
-        for m = 1:length(alpha)
-            temp = 0;
-            for n = 1:M
-                temp = temp + shiftedInput(n)...
-                    *conj(input(n))...
-                    *exp(-2i*pi*(n - 1)*alpha(m));
-            end
-            sigma(index) = sigma(index) + (1/M)*abs(temp);
-        end
-    end
-    [MaxVal , MaxIdx] = max(sigma);
-    Ng_basic = zeta(MaxIdx) - N;
-
-    Ng = Ng_basic;
-end
-
-
-% This is my method which doesn't work sometimes XD
-if(method == "mine")
+% This method is faster but has less accuracy
+if(method == "fast")
     zeta = 1024 + 2*q;
     vec = zeros(length(input) , 1);
     for i = 1:length(input)
@@ -112,17 +85,17 @@ if(method == "mine")
         here(i) = test(idx + zeta(i));
     end
     [maxVal , maxIdx] = max(abs(here));
-    Ng_mine = zeta(maxIdx) - N;
+    Ng_fast = zeta(maxIdx) - N;
 
-    Ng = Ng_mine;
+    Ng = Ng_fast;
 end
 
 
-% This is an optimized method
-if(method == "optimized")
+% This is the method introduced in the paper
+if(method == "basic")
     % Since N is estimated, b can be considered to be 1024
-    b = 1024;
-    zeta = 2*q + b;
+    % b = 1024;
+    % zeta = 2*q + b;
     alpha = (0:Np)./zeta';
 
     temp = 0;
@@ -135,17 +108,17 @@ if(method == "optimized")
     sigma2 = sum((1/M)*abs(temp) , 2);
 
     [MaxValOpt , MaxIdxOpt] = max(sigma2);
-    Ng_optimized = zeta(MaxIdxOpt) - N;
+    Ng_basic = zeta(MaxIdxOpt) - N;
 
-    Ng = Ng_optimized;
+    Ng = Ng_basic;
 end
 
 
-% This is the best and most optimized method
-if(method == "best")
+% This method is optimized to run faster in matlab
+if(method == "optimized")
     % Since N is estimated, b can be considered to be 1024
-    b = 1024;
-    zeta = 2*q + b;
+    % b = 1024;
+    % zeta = 2*q + b;
     alpha = (0:Np)./zeta';
 
     n = 0:(M-1);
@@ -159,9 +132,9 @@ if(method == "best")
     sigma2 = sum(sigma , 2);
 
     [MaxVal2 , MaxIdx2] = max(sigma2);
-    Ng_best = zeta(MaxIdx2) - N;
+    Ng_optimized = zeta(MaxIdx2) - N;
 
-    Ng = Ng_best;
+    Ng = Ng_optimized;
 end
 
 

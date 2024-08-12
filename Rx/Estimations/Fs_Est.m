@@ -17,9 +17,9 @@ function Fs = Fs_Est(s)
 N = s.N;
 input = s.data;
 
-% Turn on if you need to see the data autocorrelateion plot
+% The switch to see more details
 if(~isfield(s , 'info'))
-    s.info = true;
+    s.info = false;
 end
 info = s.info;
 
