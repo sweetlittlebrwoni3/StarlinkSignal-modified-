@@ -1,20 +1,36 @@
-function s = Nsf_Nsfd_Tfg_Est(signal)
-
-% N_Est          Estimates the # of subcarriers using a received signal
+function [Nsf , Nsfd , Tfg] = Nsf_Nsfd_Tfg_Est(s)
+% Nsf_Nsfd_Tfg_Est          Calculates the Nsf , Nsfd & Tfg parameters
 % 
 % -- Input --
-% * data      Input signal (raw array and not processed)
+% * N                       Number of subcarriers
+%
+% * Ng                      Cyclic prefix length
+%
+% * Fs                      Sampling frequency in the receiver
+%
+% * Tf                      Frame length
 %
 %   -- Output -- 
-% * s         A struct containing:
-%   
-%   Nsf
+% * Nsf                     Number of non-zero symbols per frame
 %
-%   Nsfd
+% * Nsfd                    Number of data symbols in a frame
 %
-%   Tfg
-%
+% * Tfg                     Frame guard interval
 
+N = s.N;
+Ng = s.Ng;
+Fs = s.Fs;
+Tf = s.Tf;
 
+Tsym = (N + Ng)/Fs;
+Nsf = floor(Tf/Tsym) - 1;
+
+Nsfd = Nsf - 4;
+
+Tfg = Tf - Nsf*Tsym;
+
+% s.Nsf = Nsf;
+% s.Nsfd = Nsfd;
+% s.Tfg = Tfg;
 
 end

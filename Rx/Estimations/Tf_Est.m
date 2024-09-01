@@ -56,7 +56,7 @@ Sf = (N + Ng + 1):floor(Fs*Tm - 1);
 vec = temp(Sf + maxIdx);
 [maxVal2 , maxIdx2] = max(abs(vec));
 Nf = Sf(maxIdx2);
-result = 1/round(Fs*(1/Nf));
+result = 1/round(Fs/Nf);
 
 if(info)
     Nf

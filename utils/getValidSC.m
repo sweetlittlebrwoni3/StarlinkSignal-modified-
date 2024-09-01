@@ -24,8 +24,7 @@ Fs = 240e6;
 F = Fs/1024; % Starlink OFDM subcarrier BW
 
 % Get closest channel center
-chIdx = round((Fcr/1e9 - 10.7 - F/2/1e9)/0.25 + 0.5);
-Fcii = (10.7e9 + F/2 + 250e6*(chIdx - 0.5));
+Fcii = getClosestFch(Fcr);
 % Find s.c. channel centers
 Fsc = (Fcii-round(Fs/2-F/2)):F:(Fcii+round(Fs/2-F/2));
 % Find capture frequency range

@@ -11,8 +11,10 @@ function N = N_Est(s)
 % * N         Estimated N parameter
 %
 
+
 % The following data should be provided as input
 input = s.data;
+
 
 % The switch to see more details
 if(~isfield(s , 'info'))
@@ -20,11 +22,13 @@ if(~isfield(s , 'info'))
 end
 info = s.info;
 
+
 % The guessed Fs based on the power spectrum
 if(~isfield(s , 'FsGuess'))
     s.FsGuess = 2.2e8;
 end
 FsGuess = s.FsGuess;
+
 
 % The possible error between guessed Fs and actual Fs
 % (Shown as p in the paper)
@@ -32,6 +36,7 @@ if(~isfield(s , 'err'))
     s.err = 1/10;
 end
 err = s.err;
+
 
 % sureValue is the number of elements in each correlation try
 % This number should be big enough to contain at least (N + Ng)
@@ -41,12 +46,15 @@ if(~isfield(s , 'sureValue'))
 end
 sureValue = s.sureValue;
 
+
 % The possible range for N
 S = 2.^(9:12);
+
 
 % In order for reshape to work the data needs to be truncated
 inputLength = length(input);
 signal = input(1:floor(inputLength/sureValue)*sureValue);
+
 
 % Reshaping the data to be able to process any amount of data
 vecmat = reshape(signal , sureValue , []);
@@ -58,6 +66,7 @@ for i = 1:q
     vec = vec + temp;
 end
 
+
 % The peak is for zero delay in correlation
 [val1 , idx1] = max(abs(vec));
 vec(idx1) = 0;
@@ -67,11 +76,13 @@ if(info)
     N_Estimate
 end
 
+
 % Plotting the autocorrelation in order to see the peaks
 if(info)
     t = 1:length(vec);
     plot(t , mag2db(abs(vec)));
 end
+
 
 ests = vec(S + idx1);
 [tempval , tempidx] = max(ests);
@@ -111,6 +122,7 @@ while(~valid)
         error('Could not estimate N. Please try again.');
     end
 end
+
 
 N_bestEstimate = 2^(8 + maxIdx);
 if(info)
