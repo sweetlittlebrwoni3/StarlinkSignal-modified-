@@ -14,7 +14,8 @@ function [beta0 , nm0] = Sym_CF_Est(s)
 % * Tf                      Frame length
 %
 % * Fcr                     A priori estimate of Fc and
-%                           the exact center of the band captured to produce the input
+%                           the exact center of the band captured to 
+%                           produce the input
 %
 % * bs                      Number of bits per symbol
 %
@@ -24,7 +25,9 @@ function [beta0 , nm0] = Sym_CF_Est(s)
 % * beta0                   Estimated first symbol doppler factor
 %
 
-
+%___________________________________________________________
+% This file is still a work in progress and some modifications and
+% optimizations need to be done
 
 
 % The switch to see more details
