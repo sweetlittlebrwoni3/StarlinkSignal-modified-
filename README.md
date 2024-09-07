@@ -1,4 +1,3 @@
-## This User's notes:
 In this repo I made some minor changes to the main code provided in (https://gitlab.com/radionavlab/public/ut-starlink-signal-simulator) with no changes made to the functionality of the code.
 I also added a directory called RX which has functions for the estimation part mentioned in this paper: [https://radionavlab.ae.utexas.edu/wp-content/uploads/komodromos_starlink_simulator.pdf].
 ** Note that there's still a lot of work to be done about this project and the project is not finished yet.
