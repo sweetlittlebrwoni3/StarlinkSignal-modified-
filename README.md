@@ -1,9 +1,3 @@
-# starlink-simulator
-This repository holds handy functions for simulating Starlink Ku-band downlink signals. All simulation functions are in the `utils` folder.  Tests for some functions are in the `unit_testing` folder.
-
-## Getting started
-An example of how to use some of the functions exists in the `playgrounds` folder. That should be a great place to modify some of the inputs and see how the outputs change, and so is a good jumping-off point for using the simulator. 
-
 ## License
 MIT License
 
