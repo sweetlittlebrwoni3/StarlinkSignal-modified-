@@ -1,9 +1,7 @@
-# starlink-simulator
-This repository holds handy functions for simulating Starlink Ku-band downlink signals. All simulation functions are in the `utils` folder.  Tests for some functions are in the `unit_testing` folder.
-
-## Getting started
-An example of how to use some of the functions exists in the `playgrounds` folder. That should be a great place to modify some of the inputs and see how the outputs change, and so is a good jumping-off point for using the simulator. 
-
+In this repo I made some minor changes to the main code provided in (https://gitlab.com/radionavlab/public/ut-starlink-signal-simulator) with no changes made to the functionality of the code.
+I also added a directory called RX which has functions for the estimation part mentioned in this paper: [https://radionavlab.ae.utexas.edu/wp-content/uploads/komodromos_starlink_simulator.pdf].
+** Note that there's still a lot of work to be done about this project and the project is not finished yet.
+Feel free to let me know if there's any suggestion or changes you want to make regarding this repo: me23778@hotmail.com
 ## License
 MIT License
 
@@ -42,4 +40,4 @@ Users who publish results using the UT Starlink Signal Simulator are encouraged 
 ~~~
 
 ## Project status
-The code provided in this repo is still a work in progress.
+The code provided in this repo is also still a work in progress.
