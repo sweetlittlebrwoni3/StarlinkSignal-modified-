@@ -5,9 +5,18 @@ function Tf = Tf_Est(s)
 % -- Input --
 % * data      Input signal (raw array and not processed)
 %
+% * Fs        Signal bandwidth
+%
+% * N         Number of subcarriers
+%
+% * Ng        Cyclic prefix length
+%
 %   -- Output -- 
 % * Tf         Estimated Tf parameter
 %
+
+% ** There needs to be at least two frames together for this estimation to
+% work
 
 % The following data should be provided as input
 Fs = s.Fs;
